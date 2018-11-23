@@ -1,0 +1,25 @@
+/src/main/resources/rebel.xml
+*.bak
+#/src/test/
+/target/
+**/target/**
+*.iml
+/.bpmn/
+/.settings/
+*.log
+/.project 
+*.classpath
+#/.gitignore
+/.idea/
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+lcc.iml
+
+# Package Files #
+#*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+/tzkz-nsgs.iml
