@@ -6,6 +6,7 @@
 *.iml
 /.bpmn/
 /.settings/
+/src/main/webapp/userfiles/
 *.log
 /.project 
 *.classpath
