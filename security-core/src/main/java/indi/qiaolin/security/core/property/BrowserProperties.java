@@ -15,4 +15,6 @@ public class BrowserProperties {
 
     private String loginPage = "/demo-login.html";
 
+    private LoginType loginType = LoginType.JSON;
+
 }

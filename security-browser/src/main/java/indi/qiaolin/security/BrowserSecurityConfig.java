@@ -1,6 +1,8 @@
 package indi.qiaolin.security;
 
 import com.sun.org.apache.xpath.internal.operations.And;
+import indi.qiaolin.security.authentication.MyAuthenticationFailureHandler;
+import indi.qiaolin.security.authentication.MyAuthenticationSuccessHandler;
 import indi.qiaolin.security.core.property.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +21,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Autowired
+    private MyAuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @Autowired
+    private MyAuthenticationFailureHandler authenticationFailureHandler;
+
+    @Autowired
     private SecurityProperties securityProperties;
+
+
 
 
     /**
@@ -43,6 +53,12 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
             // 配置了自定义登陆页面，这个一定要自己重新配置一下，否则没有login这个登陆接口
             // 这个是处理登陆请求流程的地址，即认证的地址
             .loginProcessingUrl("/login")
+
+            // 认证成功处理器
+            .successHandler(authenticationSuccessHandler)
+
+            // 认证失败处理器
+            .failureHandler(authenticationFailureHandler)
 
             .and()
             // 并且 认证请求

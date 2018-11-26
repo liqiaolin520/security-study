@@ -10,7 +10,7 @@ spring:
 
 logging:
   level:
-   indi.qiaolin.security: debug
+   indi.qiaolin.security: info
 
 # 不启用权限认证
 # security:
@@ -21,4 +21,5 @@ logging:
 qiao:
   security:
     browser:
-      login-page: /demo-sigin.html
+#      login-page: /demo-sigin.html
+      loginType: REDIRECT
