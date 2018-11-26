@@ -1,4 +1,4 @@
-package indi.qiaolin.security.browser;
+package indi.qiaolin.security;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
