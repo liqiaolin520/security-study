@@ -15,6 +15,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "qiao.security")
 public class SecurityProperties {
 
+    /** 浏览器配置类 */
     private BrowserProperties browser = new BrowserProperties();
+
+    /** 验证码配置类 */
+    private ValidateCodeProperties code = new ValidateCodeProperties();
+
 
 }

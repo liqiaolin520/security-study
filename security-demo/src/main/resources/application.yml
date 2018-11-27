@@ -23,3 +23,10 @@ qiao:
     browser:
 #      login-page: /demo-sigin.html
 #      loginType: REDIRECT
+    code:
+      image:
+        width: 100
+#        height:
+        length: 6
+#        expire-time:
+#        url: /hello,/hello/*
