@@ -4,6 +4,7 @@ import com.sun.org.apache.xpath.internal.operations.And;
 import indi.qiaolin.security.authentication.MyAuthenticationFailureHandler;
 import indi.qiaolin.security.authentication.MyAuthenticationSuccessHandler;
 import indi.qiaolin.security.core.property.SecurityProperties;
+import indi.qiaolin.security.core.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author qiaolin
@@ -43,8 +48,14 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        // 登陆方式为form表单，spring security会有一个默认表单
-        http.formLogin()
+        // 验证码过滤器
+        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter(authenticationFailureHandler);
+
+        // 再usernamePassword过滤器之前加入验证码过滤器
+        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+
+            // 登陆方式为form表单，spring security会有一个默认表单
+            .formLogin()
 
             // 自定义登陆页面, 可以是个接口，接口中配置相关逻辑，例如：
             // 如果用户的请求是以.html结尾的那么我们重定向到登陆页面，如果不是则返回json信息
@@ -64,7 +75,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
             // 并且 认证请求
             .authorizeRequests()
 
-            .antMatchers(  "/authentication/require", securityProperties.getBrowser().getLoginPage()).permitAll()
+            .antMatchers(buildPermitUrl()).permitAll()
 
             // 全部得请求
             .anyRequest()
@@ -82,5 +93,13 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
     }
 
 
+    private String[] buildPermitUrl(){
+        List<String> permitUrl = new ArrayList<>();
 
+        permitUrl.add("/authentication/require");
+        permitUrl.add(securityProperties.getBrowser().getLoginPage());
+        permitUrl.add("/code/image");
+
+        return  permitUrl.toArray(new String[permitUrl.size()]);
+    }
 }

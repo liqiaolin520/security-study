@@ -13,4 +13,5 @@ import org.springframework.context.annotation.Configuration;
 /** 开启一个配置，否则配置类无法使用  */
 @EnableConfigurationProperties(SecurityProperties.class)
 public class SecurityCoreConfig {
+
 }

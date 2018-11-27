@@ -22,4 +22,4 @@ qiao:
   security:
     browser:
 #      login-page: /demo-sigin.html
-      loginType: REDIRECT
+#      loginType: REDIRECT
