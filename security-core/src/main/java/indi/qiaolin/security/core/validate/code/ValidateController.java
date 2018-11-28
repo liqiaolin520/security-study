@@ -1,23 +1,16 @@
 package indi.qiaolin.security.core.validate.code;
 
-import indi.qiaolin.security.core.SecurityCoreConfig;
-import indi.qiaolin.security.core.property.SecurityProperties;
+import indi.qiaolin.security.core.validate.code.image.ImageCode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.connect.web.HttpSessionSessionStrategy;
-import org.springframework.social.connect.web.SessionStrategy;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Random;
+import java.util.Map;
 
 /**
  * 验证码接口
@@ -29,20 +22,25 @@ import java.util.Random;
 @RestController
 public class ValidateController {
 
-    public static final String SESSION_KEY = "SESSION_KEY_IMAGE_CODE";
-
-    private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
-
+    public static final String PROCESSOR_SUFFIX = "CodeProcessor";
+    
     @Autowired
-    private ValidateCodeGenerator imageCodeGenerator;
+    private Map<String, ValidateCodeProcessor> validateCodeProcessorMap;
 
-    @GetMapping("/code/image")
-    public void createCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        
-        ImageCode imageCode = imageCodeGenerator.generate(new ServletWebRequest(request));
-        sessionStrategy.setAttribute(new ServletWebRequest(request), SESSION_KEY, imageCode);
-        ImageIO.write(imageCode.getBufferedImage(), "JPEG", response.getOutputStream());
+    /**
+     *  验证码获取
+     * @param request
+     * @param response
+     * @param type
+     * @throws Exception
+     */
+    @GetMapping("/code/{type}")
+    public void createCode(HttpServletRequest request, HttpServletResponse response, @PathVariable String type) throws Exception {
+        ValidateCodeProcessor validateCodeProcessor = validateCodeProcessorMap.get(type + PROCESSOR_SUFFIX);
+        validateCodeProcessor.create(new ServletWebRequest(request, response));
     }
+
+
 
 
 }

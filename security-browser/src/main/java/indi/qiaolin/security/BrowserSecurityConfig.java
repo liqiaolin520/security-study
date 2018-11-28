@@ -129,7 +129,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 
         permitUrl.add("/authentication/require");
         permitUrl.add(securityProperties.getBrowser().getLoginPage());
-        permitUrl.add("/code/image");
+        permitUrl.add("/code/*");
 
         return  permitUrl.toArray(new String[permitUrl.size()]);
     }

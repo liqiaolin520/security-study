@@ -1,6 +1,8 @@
-package indi.qiaolin.security.core.validate.code;
+package indi.qiaolin.security.core.validate.code.image;
 
 import indi.qiaolin.security.core.property.SecurityProperties;
+import indi.qiaolin.security.core.validate.code.ValidateCode;
+import indi.qiaolin.security.core.validate.code.ValidateCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -13,13 +15,13 @@ import java.util.Random;
  * @author qiaolin
  * @version 2018/11/27
  **/
-public class ImageCodeGenerator implements ValidateCodeGenerator{
+public class ImageCodeGenerator implements ValidateCodeGenerator {
 
     @Autowired
     private SecurityProperties securityProperties;
 
     @Override
-    public ImageCode generate(ServletWebRequest request) {
+    public ValidateCode generate(ServletWebRequest request) {
         int width = ServletRequestUtils.getIntParameter(request.getRequest(), "width", securityProperties.getCode().getImage().getWidth());
         int height = ServletRequestUtils.getIntParameter(request.getRequest(), "height", securityProperties.getCode().getImage().getHeight());
 

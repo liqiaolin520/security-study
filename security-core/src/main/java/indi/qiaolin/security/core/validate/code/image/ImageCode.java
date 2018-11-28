@@ -1,5 +1,6 @@
-package indi.qiaolin.security.core.validate.code;
+package indi.qiaolin.security.core.validate.code.image;
 
+import indi.qiaolin.security.core.validate.code.ValidateCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,16 +19,10 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImageCode {
+public class ImageCode extends ValidateCode{
 
     /** 图片缓冲对象 */
     private BufferedImage bufferedImage;
-
-    /** 验证码 */
-    private String code;
-
-    /** 过期时间 */
-    private LocalDateTime expireTime;
 
     /**
      * @param bufferedImage 图片对象
@@ -35,15 +30,8 @@ public class ImageCode {
      * @param expireTime 从现在开始多少秒过期
      */
     public ImageCode(BufferedImage bufferedImage, String code, int expireTime){
-        this(bufferedImage, code, LocalDateTime.now().plusSeconds(expireTime));
-    }
-
-    /**
-     * 验证码是否过期
-     * @return
-     */
-    public boolean isExpire(){
-        return LocalDateTime.now().isAfter(expireTime);
+        super(code, LocalDateTime.now().plusSeconds(expireTime));
+        this.bufferedImage = bufferedImage;
     }
 
 }

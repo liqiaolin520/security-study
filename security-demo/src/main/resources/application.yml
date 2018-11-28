@@ -10,7 +10,7 @@ spring:
 
 logging:
   level:
-   indi.qiaolin.security: info
+   indi.qiaolin.security: debug
 
 # 不启用权限认证
 # security:

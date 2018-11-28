@@ -1,5 +1,6 @@
 package indi.qiaolin.security.core.validate.code;
 
+import indi.qiaolin.security.core.validate.code.image.ImageCode;
 import org.springframework.web.context.request.ServletWebRequest;
 
 /**
@@ -16,6 +17,6 @@ public interface ValidateCodeGenerator {
      * @param request HttpServletRequest包装类
      * @return
      */
-    ImageCode generate(ServletWebRequest request);
+    ValidateCode generate(ServletWebRequest request);
 
 }
