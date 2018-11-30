@@ -1,5 +1,6 @@
 package indi.qiaolin.security;
 
+import indi.qiaolin.security.core.property.SecurityConstants;
 import indi.qiaolin.security.support.SimpleResponse;
 import indi.qiaolin.security.core.property.SecurityProperties;
 import org.apache.commons.lang.StringUtils;
@@ -44,10 +45,10 @@ public class BrowserSecurityController {
      * @param response
      * @return
      */
-    @RequestMapping("authentication/require")
+    @RequestMapping(SecurityConstants.DEFAULT_UN_AUTHENTICATION_URL)
     public Object loginSuccess(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        // 取出引起转发的请求，我猜spring security 转发之前会把原请求放入到新请求的session域内
+              // 取出引起转发的请求，我猜spring security 转发之前会把原请求放入到新请求的session域内
         SavedRequest saveRequest = requestCache.getRequest(request, response);
 
         if(saveRequest != null){

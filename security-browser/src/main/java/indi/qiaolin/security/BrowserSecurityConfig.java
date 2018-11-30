@@ -1,19 +1,18 @@
 package indi.qiaolin.security;
 
 import com.sun.org.apache.xpath.internal.operations.And;
-import indi.qiaolin.security.authentication.MyAuthenticationFailureHandler;
-import indi.qiaolin.security.authentication.MyAuthenticationSuccessHandler;
+import indi.qiaolin.security.core.authentication.AbstractChannelSecurityConfig;
+import indi.qiaolin.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
+import indi.qiaolin.security.core.property.SecurityConstants;
 import indi.qiaolin.security.core.property.SecurityProperties;
-import indi.qiaolin.security.core.validate.code.ValidateCodeFilter;
+import indi.qiaolin.security.core.validate.code.ValidateCodeSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -27,13 +26,7 @@ import java.util.List;
  **/
 
 @Configuration
-public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
-
-    @Autowired
-    private MyAuthenticationSuccessHandler authenticationSuccessHandler;
-
-    @Autowired
-    private MyAuthenticationFailureHandler authenticationFailureHandler;
+public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
 
     @Autowired
     private SecurityProperties securityProperties;
@@ -44,7 +37,11 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 
+    @Autowired
+    private ValidateCodeSecurityConfig validateCodeSecurityConfig;
 
     /**
      *  这个方法可以配置
@@ -56,50 +53,30 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        applyPasswordAuthenticationConfig(http);
 
-        // 验证码过滤器
-        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter(authenticationFailureHandler);
-        validateCodeFilter.setSecurityProperties(securityProperties);
-        validateCodeFilter.afterPropertiesSet();
-
-        // 再usernamePassword过滤器之前加入验证码过滤器
-        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
-
-            // 登陆方式为form表单，spring security会有一个默认表单
-            .formLogin()
-
-            // 自定义登陆页面, 可以是个接口，接口中配置相关逻辑，例如：
-            // 如果用户的请求是以.html结尾的那么我们重定向到登陆页面，如果不是则返回json信息
-            .loginPage("/authentication/require")
-
-            // 配置了自定义登陆页面，这个一定要自己重新配置一下，否则没有login这个登陆接口
-            // 这个是处理登陆请求流程的地址，即认证的地址
-            .loginProcessingUrl("/login")
-
-            // 认证成功处理器
-            .successHandler(authenticationSuccessHandler)
-
-            // 认证失败处理器
-            .failureHandler(authenticationFailureHandler)
-
-
+        http
+            //在usernamePassword过滤器之前加入验证码过滤器
+            .apply(validateCodeSecurityConfig)
             .and()
-
+            // 短信登陆认证配置
+            .apply(smsCodeAuthenticationSecurityConfig)
+            .and()
+            // 开启记住我功能
             .rememberMe()
+            // 记住我持久化的操作对象
             .tokenRepository(persistentTokenRepository())
+            // 过期时间
             .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
             .userDetailsService(userDetailsService)
 
             .and()
-            // 并且 认证请求
+            //  认证请求
             .authorizeRequests()
-
+            //这些请求，可以匿名访问
             .antMatchers(buildPermitUrl()).permitAll()
-
-            // 全部得请求
-            .anyRequest()
-            // 都需要认证，才能访问
-            .authenticated()
+            // 剩下的全部得请求，都需要认证，才能访问
+            .anyRequest().authenticated()
 
             // 关闭 csrf保护
             .and().csrf().disable();
@@ -127,9 +104,10 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
     private String[] buildPermitUrl(){
         List<String> permitUrl = new ArrayList<>();
 
-        permitUrl.add("/authentication/require");
         permitUrl.add(securityProperties.getBrowser().getLoginPage());
-        permitUrl.add("/code/*");
+        permitUrl.add(SecurityConstants.DEFAULT_UN_AUTHENTICATION_URL);
+        permitUrl.add(SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*");
+        permitUrl.add(SecurityConstants.DEFAULT_AUTHENTICATION_URL_MOBILE);
 
         return  permitUrl.toArray(new String[permitUrl.size()]);
     }

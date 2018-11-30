@@ -1,5 +1,6 @@
 package indi.qiaolin.security.core.validate.code.sms;
 
+import indi.qiaolin.security.core.property.SecurityConstants;
 import indi.qiaolin.security.core.validate.code.ValidateCode;
 import indi.qiaolin.security.core.validate.code.impl.AbstractValidateCodeProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCode
 
     @Override
     protected void send(ServletWebRequest request, ValidateCode validateCode) throws IOException, Exception {
-        String mobile = ServletRequestUtils.getStringParameter(request.getRequest(), "mobile");
+        String mobile = ServletRequestUtils.getStringParameter(request.getRequest(), SecurityConstants.DEFAULT_PARAMETER_NAME_MOBILE);
         smsCodeSender.send(mobile, validateCode.getCode());
     }
 

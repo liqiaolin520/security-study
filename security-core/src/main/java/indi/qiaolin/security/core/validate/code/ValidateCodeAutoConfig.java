@@ -35,13 +35,13 @@ public class ValidateCodeAutoConfig {
 
     /** 图形验证码流程处理器 */
     @Bean
-    public ValidateCodeProcessor imageCodeProcessor(){
+    public ValidateCodeProcessor imageValidateCodeProcessor(){
         return new ImageCodeProcessor();
     }
 
     /** 短信验证码流程处理类 */
     @Bean
-    public ValidateCodeProcessor smsCodeProcessor(){
+    public ValidateCodeProcessor smsValidateCodeProcessor(){
         return new SmsCodeProcessor();
     }
 
