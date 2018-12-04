@@ -18,4 +18,6 @@ public class SocialProperties {
     /** QQ登陆配置 */
     private QQProperties qq = new QQProperties();
 
+    /** 微信登陆配置 */
+    private WeiXinProperties wx = new WeiXinProperties();
 }
