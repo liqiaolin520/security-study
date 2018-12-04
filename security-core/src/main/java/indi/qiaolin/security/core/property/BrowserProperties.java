@@ -16,6 +16,9 @@ public class BrowserProperties {
     /** 登陆页面 */
     private String loginPage = SecurityConstants.DEFAULT_LOGIN_PAGE;
 
+    /** 注册页面 */
+    private String signUpUrl = "/demo-register.html";
+
     /** 登陆类型 */
     private LoginType loginType = LoginType.JSON;
 

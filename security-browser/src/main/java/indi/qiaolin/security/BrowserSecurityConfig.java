@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -43,6 +44,10 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
     @Autowired
     private ValidateCodeSecurityConfig validateCodeSecurityConfig;
 
+    /** spring social配置 */
+    @Autowired
+    private SpringSocialConfigurer springSocialConfigurer;
+
     /**
      *  这个方法可以配置
      *      1、登陆的方式
@@ -61,6 +66,9 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
             .and()
             // 短信登陆认证配置
             .apply(smsCodeAuthenticationSecurityConfig)
+            .and()
+            // 开启 spring social
+            .apply(springSocialConfigurer)
             .and()
             // 开启记住我功能
             .rememberMe()
@@ -108,7 +116,9 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
         permitUrl.add(SecurityConstants.DEFAULT_UN_AUTHENTICATION_URL);
         permitUrl.add(SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*");
         permitUrl.add(SecurityConstants.DEFAULT_AUTHENTICATION_URL_MOBILE);
-
+        permitUrl.add(securityProperties.getBrowser().getSignUpUrl());
+        permitUrl.add("/user/register");
+        permitUrl.add("/social/user");
         return  permitUrl.toArray(new String[permitUrl.size()]);
     }
 }

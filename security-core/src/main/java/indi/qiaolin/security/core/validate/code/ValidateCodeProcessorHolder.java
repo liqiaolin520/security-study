@@ -33,9 +33,9 @@ public class ValidateCodeProcessorHolder {
      */
     public ValidateCodeProcessor findValidateCodeProcessor(String type){
         String name = type.toLowerCase() + ValidateCodeProcessor.class.getSimpleName();
-        ValidateCodeProcessor validateCodeProcessor = validateCodeProcessorMap.get(name+1);
+        ValidateCodeProcessor validateCodeProcessor = validateCodeProcessorMap.get(name);
         if(validateCodeProcessor == null){
-            throw new ValidateCodeException("验证码处理器" + name + "不存在");
+            throw new RuntimeException("验证码处理器" + name + "不存在");
         }
         return validateCodeProcessor;
     }

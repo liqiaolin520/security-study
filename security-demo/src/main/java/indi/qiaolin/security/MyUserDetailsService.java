@@ -1,4 +1,4 @@
-package indi.qiaolin.security;
+package indi.qiaolin.security ;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.social.security.SocialUser;
+import org.springframework.social.security.SocialUserDetails;
+import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,7 +22,7 @@ import org.springframework.stereotype.Component;
  **/
 
 @Component
-public class MyUserDetailsService implements UserDetailsService {
+public class MyUserDetailsService implements UserDetailsService, SocialUserDetailsService {
     private Logger logger = LoggerFactory.getLogger(MyUserDetailsService.class);
 
 
@@ -45,4 +48,16 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
 
+    @Override
+    public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException {
+        logger.debug("社交登陆名：{}", userId);
+
+
+        String newPassword = passwordEncoder.encode("123456");
+
+        logger.debug("密码加密后：{}", newPassword);
+
+        return new SocialUser(userId, newPassword, AuthorityUtils.commaSeparatedStringToAuthorityList("admin,user"));
+
+    }
 }

@@ -23,6 +23,7 @@ qiao:
     browser:
 #      login-page: /demo-sigin.html
 #      loginType: REDIRECT
+      sign-up-url: /demo-signUp.html
     code:
       image:
         width: 100
@@ -30,3 +31,13 @@ qiao:
         length: 6
 #        expire-time:
 #        url: /hello,/hello/*
+
+    social:
+       qq:
+          provider-id: callback.do
+          app-id: 100550231
+          app-secret: 69b6ab57b22f3c2fe6a6149274e3295e
+       filter-process-url: /qqLogin
+server:
+  port: 80
+
