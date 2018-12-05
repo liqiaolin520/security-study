@@ -6,7 +6,7 @@ spring:
     password:
 
   session:
-    store-type: none
+    store-type: redis
 
 
 
@@ -26,6 +26,7 @@ qiao:
 #      login-page: /demo-sigin.html
 #      loginType: REDIRECT
       sign-up-url: /demo-signUp.html
+      sign-out-url: /demo-signOut.html
       session:
         sessionInvalidUrl: /sessionInvalid
     code:

@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.InvalidSessionStrategy;
@@ -55,6 +56,9 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
 
     @Autowired
     private InvalidSessionStrategy invalidSessionStrategy;
+
+    @Autowired
+    private LogoutSuccessHandler logoutSuccessHandler;
 
     /**
      *  这个方法可以配置
@@ -106,6 +110,14 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
             // 这里需要两个and
             .and()
             .and()
+
+            .logout()
+            // 设置退出登录地址
+            .logoutUrl("/signOut")
+            // 退出成功处理器
+            .logoutSuccessHandler(logoutSuccessHandler)
+            .and()
+
             //  认证请求
             .authorizeRequests()
             //这些请求，可以匿名访问
@@ -147,6 +159,7 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
         permitUrl.add("/user/register");
         permitUrl.add("/social/user");
         permitUrl.add(securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".html");
+        permitUrl.add(securityProperties.getBrowser().getSignOutUrl());
         return  permitUrl.toArray(new String[permitUrl.size()]);
     }
 }

@@ -1,12 +1,14 @@
 package indi.qiaolin.security;
 
 import indi.qiaolin.security.core.property.SecurityProperties;
+import indi.qiaolin.security.logout.DefaultLogoutSuccessHandler;
 import indi.qiaolin.security.session.DefaultExpiredSessionStrategy;
 import indi.qiaolin.security.session.DefaultInvalidSessionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 
@@ -33,6 +35,12 @@ public class BrowserSecurityBeanConfig {
     @ConditionalOnMissingBean
     public InvalidSessionStrategy invalidSessionStrategy(){
         return new DefaultInvalidSessionStrategy(securityProperties.getBrowser().getSession().getSessionInvalidUrl());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public LogoutSuccessHandler logoutSuccessHandler(){
+        return new DefaultLogoutSuccessHandler(securityProperties.getBrowser().getSignOutUrl());
     }
 
 }

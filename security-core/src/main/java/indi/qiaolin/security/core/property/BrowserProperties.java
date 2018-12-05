@@ -19,6 +19,9 @@ public class BrowserProperties {
     /** 注册页面 */
     private String signUpUrl = "/demo-register.html";
 
+    /** 退出后跳转的页面 */
+    private String signOutUrl;
+
     /** 登陆类型 */
     private LoginType loginType = LoginType.JSON;
 
