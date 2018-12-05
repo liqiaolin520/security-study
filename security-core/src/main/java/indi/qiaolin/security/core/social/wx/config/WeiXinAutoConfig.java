@@ -2,10 +2,12 @@ package indi.qiaolin.security.core.social.wx.config;
 
 import indi.qiaolin.security.core.property.SecurityProperties;
 import indi.qiaolin.security.core.property.WeiXinProperties;
+import indi.qiaolin.security.core.social.MyConnectView;
 import indi.qiaolin.security.core.social.wx.connect.WeiXinConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.social.SocialAutoConfigurerAdapter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.social.connect.ConnectionFactory;
 
@@ -32,4 +34,10 @@ public class WeiXinAutoConfig extends SocialAutoConfigurerAdapter{
         WeiXinProperties wx = securityProperties.getSocial().getWx();
         return new WeiXinConnectionFactory(wx.getProviderId(), wx.getAppId(), wx.getAppSecret());
     }
+//                                /connect/wx
+    @Bean({"connect/wxConnected", "connect/wx", "/connect/wx", "connect/wxConnect", "/connect/wxConnect", "/connect/wx.html", "connect/wx.html"})
+    public MyConnectView connectView(){
+        return new MyConnectView();
+    }
+
 }

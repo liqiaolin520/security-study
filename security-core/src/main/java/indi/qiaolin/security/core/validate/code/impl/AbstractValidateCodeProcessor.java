@@ -1,8 +1,6 @@
 package indi.qiaolin.security.core.validate.code.impl;
 
-import indi.qiaolin.security.core.property.SecurityConstants;
 import indi.qiaolin.security.core.validate.code.*;
-import indi.qiaolin.security.core.validate.code.image.ImageCode;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
@@ -77,7 +75,7 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
 
         String codeInRequest = null;
         try {
-            codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), SecurityConstants.DEFAULT_PARAMETER_NAME_MOBILE);
+            codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), getValidateType().getParameterOnValidate());
         } catch (ServletRequestBindingException e) {
             throw  new ValidateCodeException("获取验证码的值失败！");
         }

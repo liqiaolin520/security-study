@@ -28,7 +28,7 @@ qiao:
       image:
         width: 100
 #        height:
-        length: 6
+        length: 2
 #        expire-time:
 #        url: /hello,/hello/*
 

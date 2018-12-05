@@ -15,10 +15,9 @@ import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionKey;
+import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.web.ProviderSignInUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,10 +34,14 @@ public class BrowserSecurityController {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    /**  请求缓存类 */
+    /**
+     * 请求缓存类
+     */
     private RequestCache requestCache = new HttpSessionRequestCache();
 
-    /** 重定向策咯类 */
+    /**
+     * 重定向策咯类
+     */
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Autowired
@@ -47,9 +50,12 @@ public class BrowserSecurityController {
     @Autowired
     private ProviderSignInUtils providerSignInUtils;
 
+    @Autowired
+    private ConnectionRepository connectionRepository;
 
     /**
-     *  身份认证完毕后调用的逻辑
+     * 身份认证完毕后调用的逻辑
+     *
      * @param request
      * @param response
      * @return
@@ -57,13 +63,13 @@ public class BrowserSecurityController {
     @RequestMapping(SecurityConstants.DEFAULT_UN_AUTHENTICATION_URL)
     public Object loginSuccess(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-              // 取出引起转发的请求，我猜spring security 转发之前会把原请求放入到新请求的session域内
+        // 取出引起转发的请求，我猜spring security 转发之前会把原请求放入到新请求的session域内
         SavedRequest saveRequest = requestCache.getRequest(request, response);
 
-        if(saveRequest != null){
+        if (saveRequest != null) {
             String redirectUrl = saveRequest.getRedirectUrl();
             logger.info("引起转发的URL是：{}", redirectUrl);
-            if(StringUtils.endsWithIgnoreCase(redirectUrl, ".html")){
+            if (StringUtils.endsWithIgnoreCase(redirectUrl, ".html")) {
                 redirectStrategy.sendRedirect(request, response, securityProperties.getBrowser().getLoginPage());
             }
         }
@@ -74,7 +80,7 @@ public class BrowserSecurityController {
 
 
     @GetMapping("/social/user")
-    public SocialUserInfo getSocialUserInfo(HttpServletRequest request){
+    public SocialUserInfo getSocialUserInfo(HttpServletRequest request) {
         Connection<?> connection = providerSignInUtils.getConnectionFromSession(new ServletWebRequest(request));
         SocialUserInfo socialUserInfo = new SocialUserInfo();
         ConnectionKey key = connection.getKey();
@@ -84,5 +90,13 @@ public class BrowserSecurityController {
         socialUserInfo.getHeadImg();
         return socialUserInfo;
     }
+
+
+    @RequestMapping(value="/connect/ajax/{providerId}", method= RequestMethod.DELETE)
+    public SimpleResponse removeConnections(@PathVariable String providerId) {
+        connectionRepository.removeConnections(providerId);
+        return new SimpleResponse("解除成功");
+    }
+
 
 }
