@@ -36,4 +36,7 @@ public interface SecurityConstants {
     /** 图形验证码的格式 */
     String DEFAULT_IMAGE_CODE_FORMAT = "JPEG";
 
+    /** 默认session失效时跳转的页面 */
+    String DEFAULT_SESSION_INVALID_URL = "/session/invalid";
+
 }

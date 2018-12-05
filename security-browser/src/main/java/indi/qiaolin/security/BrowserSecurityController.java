@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -98,5 +99,12 @@ public class BrowserSecurityController {
         return new SimpleResponse("解除成功");
     }
 
+
+    @GetMapping("/session/invalid")
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public SimpleResponse sessionInvalid(HttpServletRequest request, HttpServletResponse response){
+        String message = "session失效！";
+        return new SimpleResponse(message);
+    }
 
 }

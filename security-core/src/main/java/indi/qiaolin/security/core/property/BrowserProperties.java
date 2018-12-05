@@ -25,4 +25,7 @@ public class BrowserProperties {
     /** 记住我的持续时间 */
     private int rememberMeSeconds = 3600;
 
+    /** session 配置 */
+    private SessionProperties session = new SessionProperties();
+
 }

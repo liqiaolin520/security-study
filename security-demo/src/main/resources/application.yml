@@ -8,6 +8,8 @@ spring:
   session:
     store-type: none
 
+
+
 logging:
   level:
    indi.qiaolin.security: debug
@@ -24,6 +26,8 @@ qiao:
 #      login-page: /demo-sigin.html
 #      loginType: REDIRECT
       sign-up-url: /demo-signUp.html
+      session:
+        sessionInvalidUrl: /sessionInvalid
     code:
       image:
         width: 100
@@ -45,4 +49,8 @@ qiao:
           app-secret: 60f78681d063590a469f1b297feff3c4
 server:
   port: 80
+  # session 超时时间
+  session:
+    timeout: 600
+
 

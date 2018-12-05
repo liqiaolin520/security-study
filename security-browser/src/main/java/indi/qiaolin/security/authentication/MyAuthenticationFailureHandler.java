@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +49,8 @@ public class MyAuthenticationFailureHandler  extends SimpleUrlAuthenticationFail
             response.setContentType("application/json;charset=UTF-8");
 
             // 写入响应信息
-            response.getWriter().print(objectMapper.writeValueAsString(exception));
+            response.getWriter().print(objectMapper.writeValueAsString(exception.getMessage()));
+            exception.printStackTrace();
         }else{
             super.onAuthenticationFailure(request, response, exception);
         }

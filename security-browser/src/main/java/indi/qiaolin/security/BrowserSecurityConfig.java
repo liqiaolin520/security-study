@@ -1,11 +1,11 @@
 package indi.qiaolin.security;
 
-import com.sun.org.apache.xpath.internal.operations.And;
 import indi.qiaolin.security.core.authentication.AbstractChannelSecurityConfig;
 import indi.qiaolin.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import indi.qiaolin.security.core.property.SecurityConstants;
 import indi.qiaolin.security.core.property.SecurityProperties;
 import indi.qiaolin.security.core.validate.code.ValidateCodeSecurityConfig;
+import indi.qiaolin.security.session.DefaultExpiredSessionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
@@ -48,6 +50,12 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
     @Autowired
     private SpringSocialConfigurer springSocialConfigurer;
 
+    @Autowired
+    private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
+
+    @Autowired
+    private InvalidSessionStrategy invalidSessionStrategy;
+
     /**
      *  这个方法可以配置
      *      1、登陆的方式
@@ -78,6 +86,25 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
             .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
             .userDetailsService(userDetailsService)
 
+            .and()
+            // session 管理
+            .sessionManagement()
+            // session过期后跳转的地址
+            //.invalidSessionUrl("/session/invalid")
+            .invalidSessionStrategy(invalidSessionStrategy)
+
+            // 同一个账号最大的session数量
+            .maximumSessions(securityProperties.getBrowser().getSession().getMaximumSession())
+            //  配置登陆被挤下线的用户session策咯，也就给用户明白一点的提示把
+            .expiredSessionStrategy(sessionInformationExpiredStrategy)
+            // 配置登陆被挤下线的用户URL地址，
+            //.expiredUrl("xxxx")
+
+            // 配置到了最大的session数量就不允许登陆了
+            .maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().getMaxSessionPreventsLogin())
+
+            // 这里需要两个and
+            .and()
             .and()
             //  认证请求
             .authorizeRequests()
@@ -119,6 +146,7 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
         permitUrl.add(securityProperties.getBrowser().getSignUpUrl());
         permitUrl.add("/user/register");
         permitUrl.add("/social/user");
+        permitUrl.add(securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".html");
         return  permitUrl.toArray(new String[permitUrl.size()]);
     }
 }
