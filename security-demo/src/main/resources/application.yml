@@ -53,5 +53,9 @@ server:
   # session 超时时间
   session:
     timeout: 600
-
+security:
+  oauth2:
+    client:
+      client-id: qiaolin
+      client-secret: qiaolinsecret
 

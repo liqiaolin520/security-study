@@ -44,7 +44,7 @@ public class MyUserDetailsService implements UserDetailsService, SocialUserDetai
 
         logger.debug("密码加密后：{}", newPassword);
 
-        return new User(username, newPassword, AuthorityUtils.commaSeparatedStringToAuthorityList("admin,user"));
+        return new User(username, newPassword, AuthorityUtils.commaSeparatedStringToAuthorityList("admin,user,ROLE_USER"));
     }
 
 
@@ -57,7 +57,7 @@ public class MyUserDetailsService implements UserDetailsService, SocialUserDetai
 
         logger.debug("密码加密后：{}", newPassword);
 
-        return new SocialUser(userId, newPassword, AuthorityUtils.commaSeparatedStringToAuthorityList("admin,user"));
+        return new SocialUser(userId, newPassword, AuthorityUtils.commaSeparatedStringToAuthorityList("admin,user,ROLE_USER"));
 
     }
 }

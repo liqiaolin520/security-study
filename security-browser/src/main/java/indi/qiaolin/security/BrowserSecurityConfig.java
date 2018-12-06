@@ -130,11 +130,6 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig{
     }
 
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-
     /**
      * token 存放到数据库的操作类
      * @return
