@@ -4,6 +4,7 @@ import indi.qiaolin.security.core.authentication.mobile.SmsCodeAuthenticationSec
 import indi.qiaolin.security.core.property.SecurityConstants;
 import indi.qiaolin.security.core.property.SecurityProperties;
 import indi.qiaolin.security.core.social.MySpringSocialConfigurer;
+import indi.qiaolin.security.core.validate.code.ValidateCodeSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,6 +41,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
     @Autowired
     private MySpringSocialConfigurer mySpringSocialConfigurer;
 
+    @Autowired
+    private ValidateCodeSecurityConfig validateCodeSecurityConfig;
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.formLogin()
@@ -47,7 +51,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
             .loginProcessingUrl(SecurityConstants.DEFAULT_AUTHENTICATION_URL_FORM)
             .successHandler(authenticationSuccessHandler)
             .failureHandler(authenticationFailureHandler)
-
+            .and()
+            .apply(validateCodeSecurityConfig)
             .and()
             .apply(smsCodeAuthenticationSecurityConfig)
             .and()

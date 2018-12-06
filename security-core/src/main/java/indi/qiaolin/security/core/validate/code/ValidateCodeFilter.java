@@ -2,20 +2,14 @@ package indi.qiaolin.security.core.validate.code;
 
 import indi.qiaolin.security.core.property.SecurityConstants;
 import indi.qiaolin.security.core.property.SecurityProperties;
-import indi.qiaolin.security.core.validate.code.image.ImageCode;
-import indi.qiaolin.security.core.validate.code.impl.AbstractValidateCodeProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.social.connect.web.HttpSessionSessionStrategy;
-import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.bind.ServletRequestBindingException;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -37,10 +31,6 @@ import java.util.Map;
 @Slf4j
 @Component
 public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean {
-    private static final String IMAGE_CODE_SESSION_KEY = AbstractValidateCodeProcessor.SESSION_KEY_PREFIX + "IMAGE";
-
-    /** session的操作类 */
-    private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
 
     /** 认证失败处理器 */
     @Autowired
@@ -78,32 +68,6 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         filterChain.doFilter(request, response);
     }
 
-    /**
-     *  验证验证码是否正确
-     * @param request
-     */
-    private void validate(ServletWebRequest request) throws ServletRequestBindingException {
-        String codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), SecurityConstants.DEFAULT_PARAMETER_NAME_MOBILE);
-
-        if(StringUtils.isBlank(codeInRequest)){
-            throw new ValidateCodeException("验证码不能为空！");
-        }
-
-        ImageCode codeInSession = (ImageCode) sessionStrategy.getAttribute(request, IMAGE_CODE_SESSION_KEY);
-        if(codeInSession == null){
-            throw new ValidateCodeException("验证码不存在！");
-        }
-
-        if(codeInSession.isExpire()){
-            sessionStrategy.removeAttribute(request, IMAGE_CODE_SESSION_KEY);
-            throw new ValidateCodeException("验证码已过期！");
-        }
-
-        if(!StringUtils.equals(codeInRequest, codeInSession.getCode())){
-            throw new ValidateCodeException("验证码不匹配！");
-        }
-
-    }
 
     /**
      *  初始化拦截的url

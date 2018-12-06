@@ -3,13 +3,10 @@ package indi.qiaolin.security.core.validate.code.impl;
 import indi.qiaolin.security.core.validate.code.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.connect.web.HttpSessionSessionStrategy;
-import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -22,12 +19,12 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
 
     private static final String GENERATOR_SUFFIX = "CodeGenerator";
 
-    /** session策略类，用于操作session */
-    private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
-
     /** spring会将所有的ValidateCodeGenerator收集起来 以名字为Key，本身为值 */
     @Autowired
     private Map<String, ValidateCodeGenerator> validateCodeGeneratorMap;
+
+    @Autowired
+    private ValidateCodeRepository validateCodeRepository;
 
     @Override
     public void create(ServletWebRequest request) throws Exception {
@@ -55,7 +52,7 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
      */
     protected void save(ServletWebRequest request, T validateCode) {
         ValidateCode code = new ValidateCode(validateCode.getCode(), validateCode.getExpireTime());
-        sessionStrategy.setAttribute(request, getSessionKey(), code);
+        validateCodeRepository.save(request, code, getValidateType());
     }
 
     /**
@@ -65,10 +62,9 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
      *      短信验证码发送给用户
      * @param request
      * @param validateCode 生成的验证码
+     * @throws Exception
      */
-    protected abstract void send(ServletWebRequest request, T validateCode) throws IOException, Exception;
-
-
+    protected abstract void send(ServletWebRequest request, T validateCode) throws Exception;
 
 
     @Override
@@ -87,14 +83,13 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
             throw new ValidateCodeException("验证码不能为空！");
         }
 
-        String sessionKey = getSessionKey();
-        T codeInSession = (T) sessionStrategy.getAttribute(request, sessionKey);
+        T codeInSession = (T) validateCodeRepository.get(request, validateType);
         if(codeInSession == null){
             throw new ValidateCodeException("验证码不存在！");
         }
 
         if(codeInSession.isExpire()){
-            sessionStrategy.removeAttribute(request, sessionKey);
+            validateCodeRepository.remove(request, validateType);
             throw new ValidateCodeException("验证码已过期！");
         }
 
@@ -102,7 +97,7 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
             throw new ValidateCodeException("验证码不匹配！");
         }
 
-        sessionStrategy.removeAttribute(request, sessionKey);
+        validateCodeRepository.remove(request, validateType);
     }
 
     /**
@@ -112,14 +107,6 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
     private ValidateCodeType getValidateType(){
         String type = StringUtils.substringBefore(getClass().getSimpleName(), "CodeProcessor");
         return ValidateCodeType.valueOf(type.toUpperCase());
-    }
-
-    /**
-     *  获取验证码存放到Session中的名称
-     * @return
-     */
-    private String getSessionKey(){
-        return SESSION_KEY_PREFIX + getValidateType().toString();
     }
 
 }

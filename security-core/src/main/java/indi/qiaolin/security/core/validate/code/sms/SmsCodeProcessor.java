@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import java.io.IOException;
-
 /**
  * 短信验证码处理类
  * @author qiaolin
@@ -21,7 +19,7 @@ public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCode
     private SmsCodeSender smsCodeSender;
 
     @Override
-    protected void send(ServletWebRequest request, ValidateCode validateCode) throws IOException, Exception {
+    protected void send(ServletWebRequest request, ValidateCode validateCode) throws Exception {
         String mobile = ServletRequestUtils.getStringParameter(request.getRequest(), SecurityConstants.DEFAULT_PARAMETER_NAME_MOBILE);
         smsCodeSender.send(mobile, validateCode.getCode());
     }
