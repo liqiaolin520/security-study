@@ -3,7 +3,7 @@ package indi.qiaolin.security;
 import indi.qiaolin.security.core.property.SecurityConstants;
 import indi.qiaolin.security.core.property.SecurityProperties;
 import indi.qiaolin.security.support.SimpleResponse;
-import indi.qiaolin.security.support.SocialUserInfo;
+import indi.qiaolin.security.core.social.support.SocialUserInfo;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

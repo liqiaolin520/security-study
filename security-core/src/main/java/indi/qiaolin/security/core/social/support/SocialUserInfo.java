@@ -1,4 +1,4 @@
-package indi.qiaolin.security.support;
+package indi.qiaolin.security.core.social.support;
 
 import lombok.Getter;
 import lombok.Setter;

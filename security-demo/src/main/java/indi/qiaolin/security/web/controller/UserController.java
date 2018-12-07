@@ -1,5 +1,6 @@
 package indi.qiaolin.security.web.controller;
 
+import indi.qiaolin.security.app.social.AppSignUpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,12 +32,16 @@ public class UserController {
     @Autowired
     private ProviderSignInUtils providerSignInUtils;
 
+    @Autowired
+    private AppSignUpUtils appSignUpUtils;
+
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @PostMapping("/register")
     public void register(String username, String password, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        providerSignInUtils.doPostSignUp(username, new ServletWebRequest(request));
-        redirectStrategy.sendRedirect(request, response,  "/index.html");
+       // providerSignInUtils.doPostSignUp(username, new ServletWebRequest(request));
+        //redirectStrategy.sendRedirect(request, response,  "/index.html");
+        appSignUpUtils.doPostSignUp(new ServletWebRequest(request), username);
     }
 
     @GetMapping("me")

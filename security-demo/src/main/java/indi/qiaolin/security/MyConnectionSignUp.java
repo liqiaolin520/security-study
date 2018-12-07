@@ -2,14 +2,13 @@ package indi.qiaolin.security;
 
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionSignUp;
-import org.springframework.stereotype.Component;
 
 /**
  * @author qiaolin
  * @version 2018/12/3
  **/
 
-@Component
+//@Component
 public class MyConnectionSignUp implements ConnectionSignUp{
 
     /**

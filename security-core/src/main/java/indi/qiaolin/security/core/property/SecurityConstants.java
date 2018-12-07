@@ -15,9 +15,11 @@ public interface SecurityConstants {
     /** 默认的手机登陆请求处理的Url */
     String DEFAULT_AUTHENTICATION_URL_MOBILE = "/login/mobile";
 
+    /** 默认的openId登陆请求处理Url */
+    String DEFAULT_AUTHENTICATION_URL_OPENID = "/login/openid";
+
     /** 当请求需要身份认证时，会跳向这个地址 */
     String DEFAULT_UN_AUTHENTICATION_URL = "/authentication/require";
-
 
     /** 默认的验证码处理路径前缀 */
     String DEFAULT_VALIDATE_CODE_URL_PREFIX = "/code";
@@ -32,6 +34,12 @@ public interface SecurityConstants {
 
     /** 发送短信验证码 或者 验证短信信息时，传递手机号的参数名称 */
     String DEFAULT_PARAMETER_NAME_MOBILE = "mobile";
+
+    /** openId 参数名*/
+    String DEFAULT_PARAMETER_NAME_OPEN_ID = "openId";
+
+    /** providerId参数名 */
+    String DEFAULT_PARAMETER_NAME_PROVIDER_ID = "providerId";
 
     /** 图形验证码的格式 */
     String DEFAULT_IMAGE_CODE_FORMAT = "JPEG";

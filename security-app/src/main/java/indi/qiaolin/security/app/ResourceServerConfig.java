@@ -1,5 +1,6 @@
 package indi.qiaolin.security.app;
 
+import indi.qiaolin.security.app.social.openid.OpenIdAuthenticationSecurityConfig;
 import indi.qiaolin.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import indi.qiaolin.security.core.property.SecurityConstants;
 import indi.qiaolin.security.core.property.SecurityProperties;
@@ -39,6 +40,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 
     @Autowired
+    private OpenIdAuthenticationSecurityConfig openIdAuthenticationSecurityConfig;
+
+    @Autowired
     private MySpringSocialConfigurer mySpringSocialConfigurer;
 
     @Autowired
@@ -55,6 +59,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
             .apply(validateCodeSecurityConfig)
             .and()
             .apply(smsCodeAuthenticationSecurityConfig)
+            .and()
+            .apply(openIdAuthenticationSecurityConfig)
             .and()
             .apply(mySpringSocialConfigurer)
             .and()
@@ -81,6 +87,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
         permitUrl.add("/social/user");
         permitUrl.add(securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".html");
         permitUrl.add(securityProperties.getBrowser().getSignOutUrl());
+        permitUrl.add("/social/signUp");
         return  permitUrl.toArray(new String[permitUrl.size()]);
     }
 

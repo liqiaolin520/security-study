@@ -33,6 +33,9 @@ public class SocialConfig extends SocialConfigurerAdapter{
     @Autowired(required =  false)
     private ConnectionSignUp connectionSignUp;
 
+    @Autowired(required =  false)
+    private SocialAuthenticationFilterPostProcessor socialAuthenticationFilterPostProcessor;
+
     @Override
     public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
         JdbcUsersConnectionRepository jdbcUsersConnectionRepository = new JdbcUsersConnectionRepository(dataSource, connectionFactoryLocator, Encryptors.noOpText());
@@ -51,6 +54,7 @@ public class SocialConfig extends SocialConfigurerAdapter{
         MySpringSocialConfigurer springSocialConfigurer = new MySpringSocialConfigurer(securityProperties.getSocial().getFilterProcessUrl());
         // 设置注册页面
         springSocialConfigurer.signupUrl(securityProperties.getBrowser().getSignUpUrl());
+        springSocialConfigurer.setSocialAuthenticationFilterPostProcessor(socialAuthenticationFilterPostProcessor);
         return springSocialConfigurer;
     }
 
