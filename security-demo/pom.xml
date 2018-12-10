@@ -22,17 +22,17 @@
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
 
-     <!--   <dependency>
+        <dependency>
             <groupId>indi.qiaolin</groupId>
             <artifactId>security-browser</artifactId>
             <version>${project.version}</version>
-        </dependency>-->
-
+        </dependency>
+<!--
         <dependency>
             <groupId>indi.qiaolin</groupId>
             <artifactId>security-app</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency>-->
 
     </dependencies>
 

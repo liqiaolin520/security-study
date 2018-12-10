@@ -48,14 +48,20 @@ qiao:
           provider-id: wx
           app-id: wxd99431bbff8305a0
           app-secret: 60f78681d063590a469f1b297feff3c4
+    oauth2:
+      clients:
+        - {client-id: qiaolin, client-secret: qiaolinsecret, access-token-validity-seconds: 7200}
+        - {client-id: test, client-secret: test}
 server:
-  port: 8080
+  port: 80
   # session 超时时间
   session:
     timeout: 600
-security:
-  oauth2:
-    client:
-      client-id: qiaolin
-      client-secret: qiaolinsecret
+
+# 现在不需要这个了
+#security:
+#  oauth2:
+#    client:
+#      client-id: qiaolin
+#      client-secret: qiaolinsecret
 
