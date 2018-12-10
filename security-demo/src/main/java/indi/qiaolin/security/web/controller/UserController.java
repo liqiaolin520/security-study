@@ -1,5 +1,10 @@
 package indi.qiaolin.security.web.controller;
 
+import indi.qiaolin.security.core.property.SecurityProperties;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author qiaolin
@@ -23,6 +29,7 @@ import java.io.IOException;
  **/
 
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -32,6 +39,9 @@ public class UserController {
 
     //@Autowired
     //private AppSignUpUtils appSignUpUtils;
+
+    @Autowired
+    private SecurityProperties securityProperties;
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -43,8 +53,20 @@ public class UserController {
     }
 
     @GetMapping("me")
-    public Authentication me(){
-        return SecurityContextHolder.getContext().getAuthentication();
+    public Authentication me(HttpServletRequest request) throws UnsupportedEncodingException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String token = StringUtils.substringAfter(request.getHeader("Authorization"), "bearer ");
+
+        Claims body = Jwts.parser().setSigningKey(securityProperties.getOauth2().getJwtSigningKey().getBytes("UTF-8"))
+                .parseClaimsJws(token).getBody();
+
+        Object company = body.get("company");
+
+        log.info("company name --> {} ", company);
+
+        return authentication;
+
     }
 
     @GetMapping("/me/annotation")
